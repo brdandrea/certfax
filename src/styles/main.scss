@@ -1,0 +1,29 @@
+/* src/styles/main.scss */
+$app-bg: #f9f9f9;
+$menu-bg: #333;
+$link-color: #fff;
+
+.app-container {
+  background-color: $app-bg;
+  min-height: 100vh;
+}
+
+.menu {
+  background-color: $menu-bg;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+
+  a {
+    color: $link-color;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.content {
+  padding: 2rem;
+}

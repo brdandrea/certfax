@@ -1,29 +1,426 @@
-/* src/styles/main.scss */
-$app-bg: #f9f9f9;
-$menu-bg: #333;
-$link-color: #fff;
+@use './mixins' as mix;
+@use './nav' as *;
 
-.app-container {
-  background-color: $app-bg;
-  min-height: 100vh;
+$primary: #0f0f0f;
+$accent: #00ffe7;
+$font-stack: 'Inter', sans-serif;
+
+/* Base page styles */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: $font-stack, Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(135deg, $primary, #1a1a1a);
+  color: #fff;
 }
 
-.menu {
-  background-color: $menu-bg;
-  padding: 1rem;
+:root {
+  --content-max-width: 1100px;
+  --gutter: 1rem;
+  --nav-height: 64px;
+}
+
+/* center container used by navbar and pages */
+.container {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  width: 100%;
+}
+
+/* combined app-wrapper: visual chrome + layout spacing */
+.app-wrapper {
+  padding: 2rem;
+  padding-top: var(--nav-height);
+  min-height: calc(100vh - var(--nav-height));
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 255, 231, 0.2);
+}
+
+/* page container spacing */
+.page-container {
+  padding: 2rem 0;
+}
+
+.nav-dropdown { position: relative; }
+.nav-button { background: transparent; border: none; cursor: pointer; color: inherit; display: inline-flex; align-items: center; gap: .5rem; }
+.chev { transition: transform .18s ease; }
+.chev.open { transform: rotate(180deg); }
+
+/* dropdown panel */
+.dropdown-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 220px;
+  background: rgba(10,10,10,0.95);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 8px;
+  padding: .5rem 0;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  z-index: 1200;
+  list-style: none;
+  margin: 0;
+}
+
+/* items */
+.dropdown-item {
+  display: block;
+  padding: .5rem 1rem;
+  color: #e8eef1;
+  text-decoration: none;
+}
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background: rgba(255,255,255,0.02);
+  color: #fff;
+  outline: none;
+}
+/* Carousel visual refresh */
+.carousel {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  position: relative;
+  user-select: none;
+}
+
+/* window - glass + gradient + subtle inner glow */
+.carousel-window {
+  overflow: hidden;
+  border-radius: 14px;
+  min-height: 160px;
+  position: relative;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+  box-shadow: 0 8px 30px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  transition: transform 240ms ease, box-shadow 240ms ease;
+}
+
+/* slide - content layout */
+.carousel-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  gap: 1.25rem;
+  will-change: transform, opacity;
+}
+
+/* clickable link full area */
+.carousel-link {
   display: flex;
   gap: 1rem;
-
-  a {
-    color: $link-color;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  max-width: 820px; /* keep content centered within the window */
+  margin: 0 auto;
+  transform-origin: center left;
 }
 
-.content {
-  padding: 2rem;
+/* larger thumbnail with subtle border */
+.carousel-thumb {
+  width: 128px;
+  height: 128px;
+  object-fit: cover;
+  border-radius: 12px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #0b0b0b, #0f0f12);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+  border: 1px solid rgba(255,255,255,0.03);
+  transition: transform 300ms cubic-bezier(.2,.9,.2,1), box-shadow 300ms;
+  /* reserve space and avoid layout shift */
+  min-width: 128px;
+  min-height: 128px;
+  will-change: transform;
+}
+
+/* text column — give stronger hierarchy */
+.carousel-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+.carousel-title {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+.carousel-sub {
+  margin: 0;
+  color: #c9d6db;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* hover/active lift for the entire window and thumb */
+.carousel:hover .carousel-window { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(2,6,23,0.7); }
+.carousel-link:hover .carousel-thumb,
+.carousel-link:focus .carousel-thumb { transform: scale(1.03); box-shadow: 0 18px 40px rgba(2,6,23,0.65); }
+
+/* accent CTA inside slide (optional) */
+.carousel-cta {
+  margin-left: auto;
+  white-space: nowrap;
+  background: linear-gradient(90deg, #00ffe7, #7be8ff);
+  color: #012;
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(2,230,200,0.08);
+}
+
+/* controls: improved arrows and dot styles */
+.carousel-controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.carousel-btn {
+  background: rgba(255,255,255,0.03);
+  border: none;
+  color: #e6f6f6;
+  cursor: pointer;
+  padding: 0.45rem;
+  border-radius: 10px;
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  transition: transform 160ms ease, background 160ms;
+  box-shadow: 0 4px 12px rgba(2,6,23,0.45);
+}
+.carousel-btn:hover { transform: translateY(-3px); background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); }
+
+/* dots: bigger, neon active state */
+.carousel-dots { display: flex; gap: 0.5rem; padding: 0 0.5rem; }
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.03);
+  transition: transform 160ms, background 160ms, box-shadow 160ms;
+}
+.dot.active {
+  background: #00ffe7;
+  box-shadow: 0 6px 18px rgba(0,255,231,0.12), 0 0 8px rgba(0,255,231,0.06);
+  transform: scale(1.12);
+}
+
+/* responsive adjustments */
+@media (max-width: 920px) {
+  .carousel-thumb { width: 112px; height: 112px; }
+  .carousel-title { font-size: 1.05rem; }
+}
+
+@media (max-width: 520px) {
+  .carousel-window { min-height: 110px; border-radius: 10px; }
+  .carousel-slide { gap: 0.75rem; padding: 0.9rem; }
+  .carousel-thumb { width: 72px; height: 72px; display: block; }
+  .carousel-title { font-size: 1rem; }
+  .carousel-sub { font-size: 0.88rem; color: #d0dde0; }
+  .carousel-cta { display: none; }
+}
+
+/* DoD certifications chart */
+.dod-chart {
+  margin-top: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.dod-row {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  align-items: start;
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+}
+.dod-row.iat { background: linear-gradient(90deg, rgba(0,122,102,0.03), rgba(0,0,0,0.0)); }
+.dod-row.iat .dod-col.category { position: relative; }
+.dod-row.iat .dod-col.category::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 8px;
+  bottom: 8px;
+  width: 6px;
+  background: linear-gradient(180deg, #007a66, #00caa3);
+  border-radius: 4px;
+}
+.dod-row.iam { background: linear-gradient(90deg, rgba(0,88,160,0.03), rgba(0,0,0,0.0)); }
+.dod-row.iam .dod-col.category { position: relative; }
+.dod-row.iam .dod-col.category::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 8px;
+  bottom: 8px;
+  width: 6px;
+  background: linear-gradient(180deg, #0058a0, #4fb3ff);
+  border-radius: 4px;
+}
+
+/* IASAE - architecture/engineering (purple accent) */
+.dod-row.iasae { background: linear-gradient(90deg, rgba(112,64,200,0.03), rgba(0,0,0,0.0)); }
+.dod-row.iasae .dod-col.category { position: relative; }
+.dod-row.iasae .dod-col.category::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 8px;
+  bottom: 8px;
+  width: 6px;
+  background: linear-gradient(180deg, #7040c8, #b38cff);
+  border-radius: 4px;
+}
+.dod-row.iasae .cert-link { background: rgba(112,64,200,0.08); color: #f0e7ff; }
+.dod-row.iasae .cert-link:hover { box-shadow: 0 10px 30px rgba(112,64,200,0.08); }
+
+/* CSSP - cybersecurity service provider (red accent) */
+.dod-row.cssp { background: linear-gradient(90deg, rgba(200,50,50,0.03), rgba(0,0,0,0.0)); }
+.dod-row.cssp .dod-col.category { position: relative; }
+.dod-row.cssp .dod-col.category::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 8px;
+  bottom: 8px;
+  width: 6px;
+  background: linear-gradient(180deg, #c83232, #ff7b7b);
+  border-radius: 4px;
+}
+.dod-row.cssp .cert-link { background: rgba(200,50,50,0.08); color: #ffecec; }
+.dod-row.cssp .cert-link:hover { box-shadow: 0 10px 30px rgba(200,50,50,0.08); }
+.dod-row.dod-header {
+  background: rgba(255,255,255,0.02);
+  font-weight: 700;
+}
+.dod-col.category { color: #dfeffb; }
+.dod-col.certs { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.cert-link {
+  background: rgba(0,255,231,0.06);
+  color: #bff6ee;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+}
+.cert-link:hover { box-shadow: 0 8px 30px rgba(0,255,231,0.06); transform: translateY(-2px); }
+
+/* IAT/IAM cert-link variants */
+.dod-row.iat .cert-link { background: rgba(0,122,102,0.08); color: #d5fff0; }
+.dod-row.iat .cert-link:hover { box-shadow: 0 10px 30px rgba(0,122,102,0.08); }
+.dod-row.iam .cert-link { background: rgba(0,88,160,0.08); color: #def0ff; }
+.dod-row.iam .cert-link:hover { box-shadow: 0 10px 30px rgba(0,88,160,0.08); }
+
+/* Vendor page hero + quick link */
+.vendor-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+  padding: 1.15rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 10px 30px rgba(2,6,23,0.45);
+  margin-bottom: 1rem;
+}
+.vendor-hero h1 { margin: 0; font-size: 1.45rem; color: #ffffff; letter-spacing: -0.01em; }
+.vendor-lead { margin: 0; color: #cfeee6; opacity: 0.95; line-height: 1.4; }
+
+.quick-link {
+  margin-top: 0.25rem;
+  align-self: flex-end;
+  display: inline-block;
+  background: linear-gradient(90deg, #00ffe7, #7be8ff);
+  color: #012;
+  padding: 0.45rem 0.8rem;
+  border-radius: 8px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms;
+  box-shadow: 0 8px 28px rgba(0,255,231,0.08);
+}
+.quick-link:hover,
+.quick-link:focus {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 48px rgba(0,255,231,0.12);
+  outline: none;
+}
+.quick-link:focus { box-shadow: 0 18px 48px rgba(0,255,231,0.16), 0 0 0 4px rgba(0,255,231,0.06); }
+
+/* content wrapper around explanatory text */
+.vendor-content {
+  margin-top: 0.9rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+  border: 1px solid rgba(255,255,255,0.02);
+}
+.vendor-content p, .vendor-content ul { color: #e7f8f2; line-height: 1.6; }
+.vendor-content h3 { color: #fff; margin-top: 1rem; }
+
+/* Accent keywords used inline in explanatory text */
+.keyword {
+  display: inline-block;
+  background: rgba(0,255,231,0.06);
+  color: $accent;
+  padding: 0.08rem 0.36rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.97em;
+  line-height: 1;
+  margin: 0 0.18rem;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,0.12);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.keyword:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,255,231,0.06); }
+
+/* Stronger H3 heading accent */
+.vendor-content h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+  margin-top: 1rem;
+  position: relative;
+  padding-bottom: 0.45rem;
+}
+.vendor-content h3::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0.1rem;
+  width: 56px;
+  height: 4px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, $accent, #7be8ff);
+  opacity: 0.95;
+}
+
+/* Make keywords inside headings more prominent */
+.vendor-content h3 .keyword { background: transparent; color: #fff; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.85em; padding: 0 0.25rem; border-radius: 3px; }
+.vendor-content ul { margin-left: 1rem; }
+.vendor-note { margin-top: 1rem; color: #a8f0e3; font-style: italic; }
+
+@media (max-width: 720px) {
+  .dod-row { grid-template-columns: 1fr; }
+  .dod-col.category { margin-bottom: 0.5rem; }
+}
+
+@media (max-width: 640px) {
+  .vendor-hero { align-items: center; text-align: center; }
+  .quick-link { align-self: center; }
+  .vendor-content { padding: 0.85rem; }
 }

@@ -1,0 +1,14 @@
+// Utility mixins - currently not referenced in JS/JSX files, but kept for future components.
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin glass-card {
+  // glass-like card with subtle shadow
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 255, 231, 0.15);
+}

@@ -23,7 +23,13 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+  // keep ignoring React-style uppercase imports and underscore-prefixed vars,
+  // also ignore the named import `motion` from framer-motion which is commonly
+  // imported alongside `AnimatePresence` but not always used in every file.
+  // The regex below matches any identifier starting with an uppercase letter
+  // or underscore (e.g. React component imports like `Home`) OR the exact
+  // identifier `motion`.
+  'no-unused-vars': ['error', { varsIgnorePattern: '^(?:[A-Z_].*|motion)$' }],
     },
   },
 ])

@@ -75,11 +75,46 @@
   color: inherit;
   padding: 0.4rem 0.6rem; /* match .nav-link spacing */
   text-decoration: none;
+  position: relative; /* anchor for underline */
 }
 
 .nav-link:hover {
   background: rgba(255,255,255,0.02);
   color: #fff;
+}
+
+/* animated underline that grows to the accent color */
+.nav-link::after,
+.dropdown-item::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 6px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #00ffe7, #7be8ff);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 220ms cubic-bezier(.2,.9,.2,1), opacity 160ms ease;
+  opacity: 0.98;
+  pointer-events: none;
+}
+.nav-link:hover::after,
+.nav-link:focus::after,
+.dropdown-item:hover::after,
+.dropdown-item:focus::after {
+  transform: scaleX(1);
+}
+
+/* ensure dropdown items have relative positioning for the pseudo element */
+.dropdown-item { position: relative; }
+
+/* keyboard focus visible refinement */
+.nav-link:focus-visible,
+.dropdown-item:focus-visible {
+  outline: none;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45), 0 0 0 4px rgba(0,255,231,0.06);
 }
 
 /* ─────────────── BUTTON & CHEVRON ─────────────── */

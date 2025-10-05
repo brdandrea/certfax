@@ -15,6 +15,9 @@ body {
   color: #fff;
 }
 
+/* Smooth scrolling for intra-page anchors */
+html { scroll-behavior: smooth; }
+
 :root {
   --content-max-width: 1100px;
   --gutter: 1rem;
@@ -348,7 +351,11 @@ body {
   color: #012;
   padding: 0.45rem 0.8rem;
   border-radius: 8px;
-  font-weight: 800;
+  /* match the page typography */
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
   text-decoration: none;
   transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms;
   box-shadow: 0 8px 28px rgba(0,255,231,0.08);
@@ -372,6 +379,16 @@ body {
 .vendor-content p, .vendor-content ul { color: #e7f8f2; line-height: 1.6; }
 .vendor-content h3 { color: #fff; margin-top: 1rem; }
 
+/* Certification metadata block */
+.cert-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1.25rem; margin-bottom: 0.85rem; }
+.cert-meta p { margin: 0; color: #dfeffb; }
+.cert-meta a { color: $accent; font-weight: 700; }
+
+.section-body {
+  padding-left: .5rem; /* adjust value to taste */
+}
+
+
 /* Accent keywords used inline in explanatory text */
 .keyword {
   display: inline-block;
@@ -385,6 +402,78 @@ body {
   margin: 0 0.18rem;
   box-shadow: inset 0 -1px 0 rgba(0,0,0,0.12);
   transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+/* pretty table for certification metadata */
+.cert-meta-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1rem 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.45);
+}
+.cert-meta-table th,
+.cert-meta-table td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  vertical-align: top;
+}
+.cert-meta-table th {
+  width: 240px;
+  background: rgba(255,255,255,0.02);
+  color: #cfeee6;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.cert-meta-table td {
+  color: #e8fbf4;
+  font-size: 0.97rem;
+}
+.cert-meta-table tbody tr:nth-child(odd) td { background: rgba(255,255,255,0.01); }
+.cert-meta-table a { color: $accent; font-weight: 700; }
+
+@media (max-width: 640px) {
+  .cert-meta-table, .cert-meta-table tbody, .cert-meta-table tr, .cert-meta-table th, .cert-meta-table td {
+    display: block;
+    width: 100%;
+  }
+  .cert-meta-table th { padding-top: 0.65rem; }
+  .cert-meta-table td { padding-bottom: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.02); }
+}
+
+/* make the Official Certification Site link behave like nav links with grow-underline */
+.cert-official-link {
+  color: #ddd;
+  text-decoration: none;
+  position: relative;
+  padding: 0.15rem 0.25rem;
+  display: inline-block;
+}
+.cert-official-link::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: -6px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #00ffe7, #7be8ff);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 220ms cubic-bezier(.2,.9,.2,1), opacity 160ms ease;
+  opacity: 0.98;
+  pointer-events: none;
+}
+.cert-official-link:hover::after,
+.cert-official-link:focus::after {
+  transform: scaleX(1);
+}
+.cert-official-link:focus-visible {
+  outline: none;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45), 0 0 0 4px rgba(0,255,231,0.06);
 }
 .keyword:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,255,231,0.06); }
 
@@ -413,6 +502,17 @@ body {
 .vendor-content h3 .keyword { background: transparent; color: #fff; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.85em; padding: 0 0.25rem; border-radius: 3px; }
 .vendor-content ul { margin-left: 1rem; }
 .vendor-note { margin-top: 1rem; color: #a8f0e3; font-style: italic; }
+
+/* Recommendations block styling */
+.vendor-content#recommendations { padding-bottom: 1.25rem; }
+.vendor-content#recommendations ul { margin-left: 1rem; }
+.vendor-content#recommendations li { margin-bottom: 0.6rem; }
+
+/* Ensure quick-link styling is consistent for Back to top */
+.vendor-content a.quick-link { margin-top: 0; }
+
+/* Focus outlines for links inside the chart for better keyboard navigation */
+.cert-link:focus { outline: 3px solid rgba(0,255,231,0.12); outline-offset: 2px; }
 
 @media (max-width: 720px) {
   .dod-row { grid-template-columns: 1fr; }
